@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import axios  from "axios";
 import {
   Row,
   Col,
@@ -10,11 +11,30 @@ import {
   ListGroupItem,
 } from 'react-bootstrap'
 import Rating from '../components/Rating'
-import products from '../products'
+
 
 const ProductScreen = ({ match }) => {
+
+    const [product, setProduct] = useState({})
+
+    console.log(match.params.id)
+
+    useEffect(() => {
+
+      const fetchProduct = async () => {
+
+        const { data } = await axios.get(`/api/product/${match.params.id}`)
+        console.log(data)
+
+        setProduct(data)
+      }
+
+      fetchProduct()
+    }, [])
+
+
   // Find single product where _id is equal to id in the URL
-  const product = products.find((x) => x._id === match.params.id)
+//   const product = products.find((x) => x._id === match.params.id)
 
   return (
     <div className='ProductScreen'>
