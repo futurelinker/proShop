@@ -79,7 +79,8 @@ const products = [
   },
 ]
 
-module.exports = products
+// common js
+// module.exports = products
 
-// ES6 
-// export default products
+// ECMAScrip 
+export default products
