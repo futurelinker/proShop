@@ -30,7 +30,7 @@ const ProductScreen = ({ match }) => {
       }
 
       fetchProduct()
-    }, [])
+    }, [match])
 
 
   // Find single product where _id is equal to id in the URL
