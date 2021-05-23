@@ -10,7 +10,9 @@ import Product from '../models/productModel.js'
 // @access  Public
 router.get('/', asyncHandler( async (req, res) => {
   const products = await Product.find({})
-
+  // test if error on dispatch productList action  
+  // res.status(401)
+    // throw new Error('Not Authorized')
   res.status(200).json(products)
 }))
 
