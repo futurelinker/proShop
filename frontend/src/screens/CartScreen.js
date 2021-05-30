@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Row, Col, ListGroup, Image, Form, FormControl, Button, Card, ListGroupItem } from 'react-bootstrap'
-import { addToCart } from '../actions/cartActions'
+import { Row, Col, ListGroup, Image, FormControl, Button, Card, ListGroupItem } from 'react-bootstrap'
+import { addToCart, removeFromCart } from '../actions/cartActions'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 
@@ -28,7 +28,11 @@ const CartScreen = ({ match, history, location }) => {
     }, [ dispatch, productId, qty ])
 
     const removeFromCartHandler = (id) => {
-        console.log('removed')
+        dispatch(removeFromCart(id))
+    }
+
+    const checkoutHandler = () => {
+        history.push('/login?redirect=shipping')
     }
 
 
@@ -52,12 +56,18 @@ const CartScreen = ({ match, history, location }) => {
                       <Col md={3}>
                         <Link to={`/product/${item.product}`}>{item.name}</Link>
                       </Col>
-                      <Col md={2}>{item.price}</Col>
                       <Col md={2}>
+                        ${item.price}
+                      </Col>
+                      <Col md={3}>
                         <FormControl
                           as='select'
-                          value={qty}
-                          onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}
+                          value={item.qty}
+                          onChange={(e) =>
+                            dispatch(
+                              addToCart(item.product, Number(e.target.value))
+                            )
+                          }
                         >
                           {/* [0,1,2,3, etc] */}
                           {[...Array(item.countInStock).keys()].map((x) => (
@@ -68,9 +78,12 @@ const CartScreen = ({ match, history, location }) => {
                         </FormControl>
                       </Col>
                       <Col md={2}>
-                          <Button variant='light' onClick={() => removeFromCartHandler(item.product)}>
-                              <i className='fas fa-trash'></i>
-                          </Button>
+                        <Button
+                          variant='light'
+                          onClick={() => removeFromCartHandler(item.product)}
+                        >
+                          <i className='fas fa-trash'></i>
+                        </Button>
                       </Col>
                     </Row>
                   </ListGroupItem>
@@ -78,8 +91,20 @@ const CartScreen = ({ match, history, location }) => {
               </ListGroup>
             )}
           </Col>
-          <Col md={2}></Col>
-          <Col md={2}></Col>
+          <Col md={4}>
+              <Card>
+                  <ListGroup>
+                      <ListGroupItem>
+                          <h4>Subtotal ({cartItems.reduce((count, item) => count + item.qty, 0 )}) items</h4>
+                          $ {cartItems.reduce((subTotal, item) => subTotal + item.qty * item.price, 0).toFixed(2)}
+                      </ListGroupItem>
+                      <ListGroupItem>
+                          <Button type='button' className='btn-block' disabled={cartItems.length === 0} onClick={checkoutHandler}>Prodceed to checkout</Button>
+                      </ListGroupItem>
+                  </ListGroup>
+              </Card>
+          </Col>
+          
         </Row>
       </div>
     )
